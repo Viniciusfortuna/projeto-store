@@ -25,7 +25,7 @@ import com.example.store.services.CustomerService;
 @RequestMapping("/customer")
 public class CustomerController {
 
-	@Autowired /*teste*/
+	@Autowired
 	private CustomerService service;
 	
 	@PostMapping
