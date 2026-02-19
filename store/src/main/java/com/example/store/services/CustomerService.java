@@ -43,6 +43,11 @@ public class CustomerService {
 		return CustomerMapper.toDTO(customer);
 	}
 	
+	public Customer buscarPorIdEntity(Integer id){
+		Customer customer = repository.findById(id).orElseThrow(()-> new RuntimeException("Cliente não encontrado! Verifique a Busca!")); 
+		return customer;
+	}
+	
 	public CustomerResponseDTO atualizarPorId(Integer id, CustomerUpdateRequestDTO dto) {
 		Customer customer = repository.findById(id).orElseThrow(()-> new RuntimeException("Cliente não encontrado! Verifique a Busca!")); 
 		

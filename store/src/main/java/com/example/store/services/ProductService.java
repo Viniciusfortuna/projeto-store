@@ -40,6 +40,11 @@ public class ProductService {
 		return ProductMapper.toDTO(product); 
 	}
 	
+	public Product listarPorIdEntity(Long id) {
+		Product product = repository.findById(id).orElseThrow(()-> new RuntimeException("Produto não encontrado! Verifique a busca!"));
+		return product; 
+	}
+	
 	public void excluirProdutoPorId(Long id) {
 		listarPorId(id);
 		repository.deleteById(id);
