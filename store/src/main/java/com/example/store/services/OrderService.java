@@ -20,6 +20,13 @@ import jakarta.transaction.Transactional;
 @Service
 public class OrderService {
 	
+	long cont = 0;
+	
+	double valorTotIte;
+	double pesoBru;
+	double pesoLiq;
+	double valorTot;
+	
 	@Autowired
 	private OrderRepository orderRepository;
 	
@@ -39,38 +46,48 @@ public class OrderService {
 		User user = userService.buscarUsuarioPorId(dto.usuarioGeracao());
 		
 		Order order = new Order();
+		
 		order.setCustomer(customer);
-		order.setPesoBruto(dto.pesoBruto());
-		order.setPesoLiquido(dto.pesoLiquido());
-		order.setValorTotal(dto.valorTotal());
+		order.setUsuarioGeracao(user);
 		
-		order = orderRepository.save(order);
-		
-		if(dto.items() != null) {
-			
-			long cont =  1;
+		if(dto.items() != null) {		
+			cont =  1;
+			pesoBru = 0;
+			pesoLiq = 0;
 			
 			for(OrderDetailsRequestDTO dtoDetails : dto.items()) {
-				
 				OrderDetails orderDetails = new OrderDetails();
 			
 				ItemSequence pk = new ItemSequence();
-				pk.setOrder_id(order.getId());
 				pk.setOrder_sequence(cont);
 				orderDetails.setItemSequence(pk);
 				
 				Product product = productService.listarPorIdEntity(dtoDetails.productId());
 				orderDetails.setProductId(product);
-				
 				orderDetails.setPrecoUnitario(dtoDetails.precoUnitario());
 				orderDetails.setQuantidade(dtoDetails.quantidade());
 				orderDetails.setValorTotal(dtoDetails.valorTotal());
 				
-				order.getItems().add(orderDetails);
+				/*------------- Validações Itens de Pedido ------------*/
+				valorTotIte = dtoDetails.precoUnitario() * dtoDetails.quantidade();
 				
+				if(valorTotIte != dtoDetails.valorTotal()) throw new RuntimeException("O valor total não corresponde "
+				+ "aos preço unitário * quantidade! " + "Produto ID: " + product.getId() + "-" + product.getNome() + " SEQ: " + pk.getOrder_sequence());
+				
+				pesoBru = pesoBru + (product.getPesoBruto() * dtoDetails.quantidade());
+				pesoLiq = pesoLiq +  (product.getPesoLiquido() * dtoDetails.quantidade());
+				valorTot = valorTot + dtoDetails.valorTotal();
+				
+				order.addItem(orderDetails);		
 				cont++;
 			}
 		}
+		
+		order.setPesoBruto(pesoBru);
+		order.setPesoLiquido(pesoLiq);
+		order.setValorTotal(valorTot);
+			
+		order = orderRepository.save(order);
 		
 		return OrderMapper.toDTO(order);
 	

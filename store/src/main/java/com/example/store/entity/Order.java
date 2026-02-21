@@ -1,6 +1,7 @@
 package com.example.store.entity;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.store.enums.StatusPedido;
@@ -50,7 +51,7 @@ public class Order {
 	private Double pesoLiquido;
 	
 	@OneToMany(mappedBy = "orderId", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<OrderDetails> items;
+	private List<OrderDetails> items = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "usuario_geracao")
@@ -75,5 +76,10 @@ public class Order {
 	@PreUpdate 
 	public void updatedAt() {
 		this.updatedAt = LocalDateTime.now();
+	}
+	
+	public void addItem(OrderDetails item) {
+	    item.setOrderId(this);
+	    this.items.add(item);
 	}
 }
