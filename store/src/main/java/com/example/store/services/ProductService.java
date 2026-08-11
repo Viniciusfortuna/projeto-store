@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.store.dto.request.ProductFilterRequest;
 import com.example.store.dto.request.ProductRequestDTO;
 import com.example.store.dto.request.ProductUpdateRequestDTO;
 import com.example.store.dto.response.ProductResponseDTO;
@@ -12,6 +13,7 @@ import com.example.store.entity.Product;
 import com.example.store.entity.User;
 import com.example.store.mapper.ProductMapper;
 import com.example.store.repository.ProductRepository;
+import com.example.store.specification.ProductSpecification;
 
 @Service
 public class ProductService {
@@ -31,8 +33,8 @@ public class ProductService {
 		return ProductMapper.toDTO(repository.save(product)); 
 	}
 	
-	public List<ProductResponseDTO> listarTodos() {
-		return repository.findAll().stream().map(ProductMapper::toDTO).toList();
+	public List<ProductResponseDTO> listarTodos(ProductFilterRequest filter) {
+		return repository.findAll(ProductSpecification.withFilter(filter)).stream().map(ProductMapper::toDTO).toList();
 	}
 	
 	public ProductResponseDTO listarPorId(Long id) {

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.store.dto.request.ProductFilterRequest;
 import com.example.store.dto.request.ProductRequestDTO;
 import com.example.store.dto.request.ProductUpdateRequestDTO;
 import com.example.store.dto.response.ProductResponseDTO;
@@ -36,8 +37,8 @@ public class ProductController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<ProductResponseDTO>> buscarTodos(){
-		return ResponseEntity.ok(service.listarTodos());
+	public ResponseEntity<List<ProductResponseDTO>> buscarTodos(ProductFilterRequest filter){
+		return ResponseEntity.ok(service.listarTodos(filter));
 	}
 	
 	@GetMapping("/{id}")
