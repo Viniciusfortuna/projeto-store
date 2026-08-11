@@ -1,11 +1,13 @@
 package com.example.store.mapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.response.UserResponseDTO;
 import com.example.store.entity.User;
 
 public class UserMapper {
-	
 	public static UserResponseDTO toDTO(User user) {
 		
 		return new UserResponseDTO(user.getId(),
@@ -20,6 +22,7 @@ public class UserMapper {
 		user.setEmail(dto.email());
 		user.setSenha(dto.senha());
 		user.setTelefone(dto.telefone());
+		user.setRoleUsuario(dto.roleUsuario());
 		return user;
 	}
 

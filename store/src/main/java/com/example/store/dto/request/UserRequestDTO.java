@@ -1,5 +1,7 @@
 package com.example.store.dto.request;
 
+import com.example.store.enums.Role;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,7 +27,10 @@ public record UserRequestDTO(
 		@NotNull
 		String nome,
 		
-		String telefone
+		String telefone,
+		
+		@NotNull(message = "O role do usuário deve ser preenchido!")
+		Role roleUsuario
 ) {
 
 }
