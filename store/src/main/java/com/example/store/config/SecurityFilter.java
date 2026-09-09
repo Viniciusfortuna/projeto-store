@@ -1,7 +1,8 @@
 package com.example.store.config;
 
-import java.awt.List;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.logging.log4j.util.Strings;
@@ -34,10 +35,35 @@ public class SecurityFilter extends OncePerRequestFilter  {
 			String token = authorizationHeader.substring("Bearer ".length()); /*Armazenar apenas o que vem depois de bearer*/
 			Optional<JWTUserData> optUser = tokenConfig.validateToken(token);
 			
-			if(optUser.isPresent()) {
+			if(optUser.isPresent()) {/*
 				JWTUserData userData = optUser.get();
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userData,null, java.util.List.of(new SimpleGrantedAuthority(userData.role())));
-				SecurityContextHolder.getContext().setAuthentication(authentication);
+				SecurityContextHolder.getContext().setAuthentication(authentication);*/
+				JWTUserData userData = optUser.get();
+
+                List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+                // Role do usuário
+                authorities.add(
+                    new SimpleGrantedAuthority(userData.role())
+                );
+
+                // Permissões: somente adiciona se houver alguma
+                if (userData.permissions() != null) {
+                    userData.permissions().forEach(permission ->
+                        authorities.add(new SimpleGrantedAuthority(permission))
+                    );
+                }
+
+                UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(
+                        userData,
+                        null,
+                        authorities
+                    );
+
+                SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
 			}
 			filterChain.doFilter(request, response);
 		}

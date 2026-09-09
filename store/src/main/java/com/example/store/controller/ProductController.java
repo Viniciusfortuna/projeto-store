@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ public class ProductController {
 	}
 	
 	@GetMapping
+	@PreAuthorize("hasAuthority('PRODUTOS_VISUALIZAR')")
 	public ResponseEntity<List<ProductResponseDTO>> buscarTodos(ProductFilterRequest filter){
 		return ResponseEntity.ok(service.listarTodos(filter));
 	}
@@ -47,6 +49,7 @@ public class ProductController {
 	}
 	
 	@PutMapping
+	@PreAuthorize("hasAuthority('PEDIDOS_EDITAR')")
 	public ResponseEntity<ProductResponseDTO> atualizarPorId(@RequestParam Long id, @Valid @RequestBody ProductUpdateRequestDTO dto){
 		return ResponseEntity.status(HttpStatus.OK).body(service.atualizarPorId(id, dto));
 	}

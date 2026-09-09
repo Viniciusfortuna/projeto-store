@@ -1,5 +1,6 @@
 package com.example.store.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -14,9 +15,13 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,11 +58,37 @@ public class User implements UserDetails {
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private Role roleUsuario;
+	
+	@ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "usuario_permissoes",
+        joinColumns = @JoinColumn(name = "usuario_id"),
+        inverseJoinColumns = @JoinColumn(name = "permissao_id")
+    )
+    @Builder.Default
+    private List<Permissions> permissoes = new ArrayList<>();
+	
+	public List<String> getPermissions() {
+        return permissoes.stream()
+            .map(Permissions::getNome)
+            .toList();
+	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		// TODO Auto-generated method stub
-		return List.of(new SimpleGrantedAuthority(roleUsuario.name()));
+		
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		
+		authorities.add(new SimpleGrantedAuthority(roleUsuario.name()));
+		
+		permissoes.forEach(permissao ->
+        authorities.add(new SimpleGrantedAuthority(permissao.getNome()))
+		);
+		
+		
+		return authorities;
+		/*return List.of(new SimpleGrantedAuthority(roleUsuario.name()));*/
 	}
 
 	@Override

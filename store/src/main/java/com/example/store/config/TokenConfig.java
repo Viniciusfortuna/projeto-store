@@ -23,6 +23,7 @@ public class TokenConfig {
 		return JWT.create()
 				.withClaim("user", user.getId())
 				.withClaim("role", user.getRoleUsuario().name())
+				.withClaim("permissions", user.getPermissions())
 				.withSubject(user.getEmail())
 				.withExpiresAt(Instant.now().plusSeconds(86400))
 				.withIssuedAt(Instant.now())
@@ -40,6 +41,7 @@ public class TokenConfig {
 					.userId(decoded.getClaim("user").asLong())
 					.role(decoded.getClaim("role").asString())
 					.email(decoded.getSubject())
+					.permissions(decoded.getClaim("permissions").asList(String.class))
 					.build());
 			
 		} catch (JWTVerificationException e) {
