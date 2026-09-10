@@ -1,5 +1,7 @@
 package com.example.store.dto.request;
 
+import java.util.List;
+
 import com.example.store.enums.Role;
 
 import jakarta.validation.constraints.Email;
@@ -12,17 +14,14 @@ public record UserRequestDTO(
 		@NotNull
 		String email,
 		
-		@Email
 		@NotBlank(message = "O login deve ser Preenchido!")
 		@NotNull
 		String login,
 		
-		@Email
 		@NotBlank(message = "A senha deve ser preenchida!")
 		@NotNull
 		String senha,
 		
-		@Email
 		@NotBlank(message = "O nome deve ser Preenchido!")
 		@NotNull
 		String nome,
@@ -30,7 +29,10 @@ public record UserRequestDTO(
 		String telefone,
 		
 		@NotNull(message = "O role do usuário deve ser preenchido!")
-		Role roleUsuario
+		Role roleUsuario,
+		
+		@NotNull(message = "A lista de permissões precisa ser informada, mesmo que vazia!")
+		List<Integer> permissaoIds
 ) {
 
 }

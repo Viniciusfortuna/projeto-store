@@ -1,5 +1,6 @@
 package com.example.store.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -7,24 +8,32 @@ import org.springframework.stereotype.Service;
 
 import com.example.store.dto.request.UserRequestDTO;
 import com.example.store.dto.response.UserResponseDTO;
+import com.example.store.entity.Permissions;
 import com.example.store.entity.User;
 import com.example.store.mapper.UserMapper;
+import com.example.store.repository.PermissionsRepository;
 import com.example.store.repository.UserRepository;
 
 @Service
 public class UserService {
 
 	private final UserRepository repository;
+	private final PermissionsRepository permissionsRepository;
 	private final PasswordEncoder passwordEncoder;
 	
-	public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
+	public UserService(UserRepository repository, PasswordEncoder passwordEncoder, PermissionsRepository permissionsRepository) {
 		this.repository = repository;
 		this.passwordEncoder = passwordEncoder;
+		this.permissionsRepository = permissionsRepository;
 	}
 	
 	public UserResponseDTO salvar(UserRequestDTO dto) {
 		
-		User user = UserMapper.toEntity(dto);
+		List<Permissions> permissions = dto.permissaoIds() == null
+			    ? new ArrayList<>()
+			    : permissionsRepository.findAllById(dto.permissaoIds());
+		
+		User user = UserMapper.toEntity(dto, permissions);
 		
 		user.setSenha(passwordEncoder.encode(user.getSenha()));
 		
