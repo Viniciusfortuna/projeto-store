@@ -71,8 +71,16 @@ public class UserService {
 		user.setEmail(dto.email());
 		user.setLogin(dto.login());
 		user.setNome(dto.nome());
-		user.setSenha(dto.senha());
+		user.setSenha(passwordEncoder.encode(dto.senha()));
 		user.setTelefone(dto.telefone());
+		user.setRoleUsuario(dto.roleUsuario());
+		
+		/*Se permissões forem informadas ele vai alterar as permissões do usuário em questão*/
+		if((!dto.permissaoIds().isEmpty()) && (dto.permissaoIds() != null)) {
+			List<Permissions> permissions = permissionsRepository.findAllById(dto.permissaoIds());
+			user.setPermissoes(permissions);
+		}
+		
 		
 		User updated = repository.save(user);
 		return UserMapper.toDTO(updated);
