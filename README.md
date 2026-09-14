@@ -1,5 +1,6 @@
-O projeto é uma demonstração de um "CRUD", utilizando o SPRING BOOT, sendo organizado por arquitetura em camadas. 
+O projeto utiliza como base uma arquitetura em camada, na qual estão presentes funções de CREATE, READ, UPDATE e DELETE.
 
-Funções:
+As mensagens de retorno da aplicação para os casos de RunTimeException, e validações de campos também foram personalizadas para um retorno padronizado ao usuário.
 
-CREATE, UPDATE, DELETE, SELECT de produtos usuários e afins.
+A documentação da API pode ser acessada por meio do link: http://localhost:8080/swagger-ui/index.html.
+
