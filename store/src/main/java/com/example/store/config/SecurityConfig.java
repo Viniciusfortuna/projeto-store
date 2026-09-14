@@ -34,7 +34,9 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) /*Cada requisição vai trazer a seu próprio token*/
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-						//.requestMatchers(HttpMethod.POST, "/users").permitAll()
+						.requestMatchers("/swagger-ui/**",
+							    "/swagger-ui.html",
+							    "/v3/api-docs/**").permitAll()
 						.requestMatchers("/users/**").hasRole("ADMIN")
 						.anyRequest().authenticated())
 				.addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
